@@ -7,5 +7,5 @@ from Client import web_interface
 
 interface = web_interface.WebInterface("localhost", 8080)
 
-reply_data = interface.do_request({"method": "update", "set": {"name": "Jacko"}, "where": {"name": "Bean"}})
+reply_data = interface.do_request({"method": "select"})
 print(reply_data)

@@ -19,4 +19,3 @@ def method_handler(parameters):
 
 web_instance = web_interface.WebInterface(8080, method_handler)
 web_instance.serve_forever()
-
