@@ -82,7 +82,7 @@ class Database:
 
     def delete(self, parameters):
         """
-        Delete databsae row selected by "where" key/values
+        Delete database row selected by "where" key/values
         :param parameters: Dict containing a "where" dict of key/values
         :return: JSON-format result
         """
