@@ -1,3 +1,10 @@
+"""
+SQLite-JSON database adapter
+Team 3
+Jack Andersen
+"""
+
+
 import sqlite3
 from typing import Mapping, Tuple, Union
 

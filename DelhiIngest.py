@@ -1,6 +1,7 @@
 """
 Client for ingesting delhi weather data
 Team 3
+Jack Andersen
 """
 
 from Client import web_interface

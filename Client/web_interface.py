@@ -1,3 +1,10 @@
+"""
+Client-side HTTP endpoint
+Team 3
+Jack Andersen
+"""
+
+
 import http.client
 import json
 

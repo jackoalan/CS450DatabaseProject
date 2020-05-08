@@ -1,6 +1,7 @@
 """
 Simple Database Server Driver
 Team 3
+Jack Andersen
 """
 
 # Server consists of a database component and web interface component
