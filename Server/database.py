@@ -7,32 +7,32 @@ class Database:
     Sqlite3 database adapter for basic CRUD operations on a single-table database.
     """
     def __init__(self, path):
-        self.conn = sqlite3.connect(path)
+        self.connection = sqlite3.connect(path)
 
-    def execute_query(self, query: str, parameters: Tuple):
+    def execute_statement(self, statement: str, parameters: Tuple):
         """
-        Run query and bound parameters against database.
+        Run SQL statement using bound parameters against database.
         Exceptions are converted into JSON-format errors
-        :param query: Query string, column values may be substituted with ? tokens
+        :param statement: Statement string; column values may be substituted with ? tokens
         :param parameters: Tuple of parameters to bind to ? tokens
         :return: Dict containing JSON-format result
         """
         try:
-            with self.conn as c:
-                rows = c.execute(query, parameters).fetchall()
-        except Exception as e:
-            return {"result": str(e)}
+            with self.connection as transaction:
+                rows = transaction.execute(statement, parameters).fetchall()
+        except Exception as exc:
+            return {"result": str(exc)}
         if len(rows):
             return {"result": "success", "rows": rows}
         return {"result": "success"}
 
     @staticmethod
-    def make_q_tokens(num: int) -> str:
+    def make_statement_tokens(num: int) -> str:
         return ','.join(('?',) * num)
 
     @staticmethod
-    def make_q_eq_tokens(cols: Mapping[str, Union[int, float, str]]) -> str:
-        return ','.join([f'"{c}"=?' for c in cols])
+    def make_statement_eq_tokens(columns: Mapping[str, Union[int, float, str]]) -> str:
+        return ','.join([f'"{column}"=?' for column in columns])
 
     def insert(self, parameters):
         """
@@ -42,10 +42,10 @@ class Database:
         """
         sets = parameters["set"]
         column_tokens = ','.join(sets.keys())
-        value_tokens = self.make_q_tokens(len(sets))
-        q = "INSERT INTO simple({0}) VALUES ({1})".format(column_tokens, value_tokens)
-        p = tuple(sets.values())
-        return self.execute_query(q, p)
+        value_tokens = self.make_statement_tokens(len(sets))
+        statement = "INSERT INTO simple({0}) VALUES ({1})".format(column_tokens, value_tokens)
+        statement_params = tuple(sets.values())
+        return self.execute_statement(statement, statement_params)
 
     def select(self, parameters):
         """
@@ -55,12 +55,12 @@ class Database:
         """
         if "where" in parameters and len(parameters["where"]):
             where = parameters["where"]
-            q_tokens = self.make_q_eq_tokens(where)
-            q = "SELECT * FROM simple WHERE ({})".format(q_tokens)
-            p = tuple(where.values())
-            return self.execute_query(q, p)
+            statement_tokens = self.make_statement_eq_tokens(where)
+            statement = "SELECT * FROM simple WHERE ({})".format(statement_tokens)
+            statement_params = tuple(where.values())
+            return self.execute_statement(statement, statement_params)
         else:
-            return self.execute_query("SELECT * FROM simple", tuple())
+            return self.execute_statement("SELECT * FROM simple", tuple())
 
     def update(self, parameters):
         """
@@ -69,16 +69,16 @@ class Database:
         :return: JSON-format result
         """
         sets = parameters["set"]
-        set_q_tokens = self.make_q_eq_tokens(sets)
+        set_statement_tokens = self.make_statement_eq_tokens(sets)
         if "where" in parameters:
             where = parameters["where"]
-            where_q_tokens = self.make_q_eq_tokens(where)
-            q = "UPDATE simple SET {} WHERE ({})".format(set_q_tokens, where_q_tokens)
-            p = tuple(sets.values()) + tuple(where.values())
+            where_statement_tokens = self.make_statement_eq_tokens(where)
+            statement = "UPDATE simple SET {} WHERE ({})".format(set_statement_tokens, where_statement_tokens)
+            statement_params = tuple(sets.values()) + tuple(where.values())
         else:
-            q = "UPDATE simple SET {}".format(set_q_tokens)
-            p = tuple(sets.values())
-        return self.execute_query(q, p)
+            statement = "UPDATE simple SET {}".format(set_statement_tokens)
+            statement_params = tuple(sets.values())
+        return self.execute_statement(statement, statement_params)
 
     def delete(self, parameters):
         """
@@ -87,7 +87,7 @@ class Database:
         :return: JSON-format result
         """
         where = parameters["where"]
-        where_q_tokens = self.make_q_eq_tokens(where)
-        q = "DELETE FROM simple WHERE ({})".format(where_q_tokens)
-        p = tuple(where.values())
-        return self.execute_query(q, p)
+        where_statement_tokens = self.make_statement_eq_tokens(where)
+        statement = "DELETE FROM simple WHERE ({})".format(where_statement_tokens)
+        statement_params = tuple(where.values())
+        return self.execute_statement(statement, statement_params)
