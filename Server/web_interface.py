@@ -1,17 +1,14 @@
 import http.server
 import json
+import os.path
 
 
-class Handler(http.server.BaseHTTPRequestHandler):
+class Handler(http.server.SimpleHTTPRequestHandler):
     server_version = "SimpleDatabase/1.0"
 
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header("Content-Type", "text/plain")
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-        self.end_headers()
-        self.wfile.write("Web frontend not implemented".encode())
+    def __init__(self, *args, **kwargs):
+        directory = os.path.join(os.getcwd(), "vue_client", "dist")
+        super().__init__(*args, directory=directory, **kwargs)
 
     def do_POST(self):
         if self.headers.get("Content-Type") != "application/json":
