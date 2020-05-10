@@ -8,6 +8,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-Type", "text/plain")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
         self.end_headers()
         self.wfile.write("Web frontend not implemented".encode())
 
@@ -36,10 +38,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
         response_string = json.dumps(response_data).encode()
         self.send_response(200)
         self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
         self.send_header("Content-Length", str(len(response_string)))
         self.end_headers()
         self.wfile.write(response_string)
 
+    def do_OPTIONS(self):
+        self.send_response(200,"ok")
+        self.send_header('Access-Control-Allow-Origin','*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST')
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With')
+        self.end_headers()
 
 class WebInterface(http.server.HTTPServer):
     def __init__(self, port: int, method_handler):
