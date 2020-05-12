@@ -8,7 +8,7 @@ npm install
 ```
 
 ### Compiles and minifies for production.  
-#### Build sent to dist directory and configured to localhost:8080
+#### Build configured to localhost:8080
 ```
 npm run build
 ```
