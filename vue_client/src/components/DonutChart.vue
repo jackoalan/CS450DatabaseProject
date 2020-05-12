@@ -31,12 +31,13 @@ export default {
                 }
               }
             },
-        labels: ["Smoke", "Haze", "Clear", "Partly Cloudy", "Rain"],
+        labels: ["Haze","Smoke","Clear", "Partly Cloudy", "Fog", "Shallow Fog","Rain"],
         title: {
-              text: "Weather Status in New Delhi"
+              text: "Weather Conditions in New Delhi"
         }
       },
-      series: [30, 40, 45, 50, 49]
+      //series represents counts of data points
+      series: [7268, 4023, 2242, 5093, 4911, 3063, 1254]
     }
   }
 }
