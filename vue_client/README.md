@@ -1,4 +1,4 @@
-# client
+# Vue Client developed by Nico Del Moral
 
 ## Project setup
 ```
